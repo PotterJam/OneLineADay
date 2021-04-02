@@ -18,12 +18,10 @@
 <main>
 	<h1>What will you write?</h1>
 	<input id="input-line" type="text" placeholder="There's no going back."/>
-	<div class="gradient-div">
-		<div class="live-lines-container">
-			{#each lipsumLines as line}
-				<span class="live-line">{line}</span>
-			{/each}
-		</div>
+	<div class="live-lines-container">
+		{#each lipsumLines as line}
+			<span class="live-line">{line}</span>
+		{/each}
 	</div>
 </main>
 
@@ -51,38 +49,44 @@
 		border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
 	}
 
-	.gradient-div {
-		background-color: rgb(57, 57, 58);
-		display: flex;
-		margin-top: 2em;
-		flex: 1;
-		width: 100%;
-		justify-content: center;
-	}
-
 	.live-lines-container {
 		flex: 1;
 		max-width: 800px;
 		background-color: rgb(246, 251, 253);
-		margin: 3.5em 0 0 0;
+		margin: 2em 0 0 0;
 		padding: 1em;
 		border-radius: 30px 30px 0 0;
 		display:flex;
 		align-items: flex-start;
 		align-content: flex-start;
 		flex-wrap: wrap;
+		flex-direction: column;
 	}
 
 	.live-line {
 		max-width: 700px;
-		background-color: #ffffff;
-		border-radius: 0 0.5em 0.5em 0.5em;
+		border-radius: 0.5em;
 		padding: 0.5em 0.8em;
 		margin: 0.6em;
-		border: 3px solid #585bd6;
-		box-shadow: 0 0 0 1px #4143a7;
+		background: rgb(209,209,209);
+		background: linear-gradient(81deg, rgba(209,209,209,1) 0%, rgba(240,240,240,1) 100%);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		animation: bounceIn 2s;
+	}
+
+	@keyframes bounceIn {
+		0% {
+			transform: scale(0.1);
+			opacity: 0;
+		}
+		60% {
+			transform: scale(1.2);
+			opacity: 1;
+		}
+		100% {
+			transform: scale(1);
+		}
 	}
 </style>
