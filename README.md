@@ -8,3 +8,6 @@ To build
 
 To run
 `cabal new-run`
+
+### Here's an early prototype of the frontend to reminisce about
+![02-04-21](https://user-images.githubusercontent.com/6589770/113454574-7c39b680-9400-11eb-9b18-8dad663403aa.gif)
