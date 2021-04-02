@@ -1,4 +1,7 @@
 <script>
+	import { fade, scale } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
+
 	const lipsumLines = ['Lorem ipsum dolor sit amet',
 		'consectetur adipiscing elit.',
 		'Nullam suscipit velit turpis.',
@@ -12,16 +15,25 @@
 		'Ut non lectus quis odio dictum commodo.',
 		'Quisque vel mauris semper, pellentesque augue non, viverra augue.',
 		'Nunc et leo quis metus ornare viverra. Aliquam sem ex, tincidunt nec metus sit amet, placerat pellentesque ipsum.',
-	];
+	].map((x, i) => ({ id: i, line: x }));
+
+	let liveLines = lipsumLines;
+
+	setInterval(() => {
+		const { line } = lipsumLines[Math.floor(Math.random() * 13)];
+		liveLines = [{ id: liveLines.length, line: line}, ...liveLines];
+	}, 1000);
 </script>
 
 <main>
 	<h1>What will you write?</h1>
 	<input id="input-line" type="text" placeholder="There's no going back."/>
-	<div class="live-lines-container">
-		{#each lipsumLines as line}
-			<span class="live-line">{line}</span>
-		{/each}
+	<div class="live-lines-content">
+		<div class="live-lines-container">
+			{#each liveLines as line, i (line.id)}
+				<span animate:flip="{{ duration: 300 }}" out:scale="{{ duration: 250 }}" in:scale="{{ duration: 250 }}" class="live-line" >{line.line}</span>
+			{/each}
+		</div>
 	</div>
 </main>
 
@@ -41,26 +53,41 @@
 
 	#input-line {
 		width: 500px;
-		height: 70px;
 		font-size: x-large;
-		border: 10px solid;
-		border-image-slice: 1;
-		border-width: 5px;
-		border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+	}
+
+	.live-lines-content {
+		flex: 1;
+		display: flex;
+		overflow: auto;
+		width: 100%;
+		justify-content: center;
 	}
 
 	.live-lines-container {
 		flex: 1;
 		max-width: 800px;
-		background-color: rgb(246, 251, 253);
 		margin: 2em 0 0 0;
 		padding: 1em;
 		border-radius: 30px 30px 0 0;
 		display:flex;
 		align-items: flex-start;
 		align-content: flex-start;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		flex-direction: column;
+		height: fit-content;
+	}
+
+	.live-lines-container:after {
+		content: "";
+		position: absolute;
+		z-index: 1;
+		bottom: 0;
+		left: 0;
+		pointer-events: none;
+		background-image: linear-gradient(to bottom,rgba(255,255,255, 0),rgba(246, 251, 253, 1) 90%);
+		width: 100%;
+		height: 4em;
 	}
 
 	.live-line {
@@ -73,20 +100,5 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		animation: bounceIn 2s;
-	}
-
-	@keyframes bounceIn {
-		0% {
-			transform: scale(0.1);
-			opacity: 0;
-		}
-		60% {
-			transform: scale(1.2);
-			opacity: 1;
-		}
-		100% {
-			transform: scale(1);
-		}
 	}
 </style>
