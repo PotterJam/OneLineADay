@@ -10,7 +10,7 @@ withDbConnection
   :: (MonadReader Env m, MonadIO m)
   => (PG.Connection -> IO a) -> m a
 withDbConnection f = do
-  connection <- withDbConnection
+  connection <- getDbConnection
   res <- liftIO $ f connection
   liftIO $ PG.close connection
   return res

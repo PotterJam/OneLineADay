@@ -1,5 +1,7 @@
 module Main where
 
+import LiveLines.App (run)
+
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
+  run 5000
