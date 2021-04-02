@@ -22,7 +22,10 @@ maintainer:         jamesrpotter1@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  MyLib
+    exposed-modules:
+        Env
+        DB
+        Config
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -31,19 +34,53 @@ library
     -- other-extensions:
     build-depends:    base ^>=4.14.1.0
     hs-source-dirs:   src
+    ghc-options:      -Wall
+    default-extensions: OverloadedStrings
+                      , LambdaCase
+                      , InstanceSigs
+                      , EmptyCase
+                      , FlexibleContexts
+                      , FlexibleInstances
+                      , MultiParamTypeClasses
+                      , MultiWayIf
+                      , NamedFieldPuns
+                      , TupleSections
+                      , RecordWildCards
+    build-depends:
+        base ^>=4.14.1.0
+        , aeson
+        , dhall
+        , mtl
+        , postgresql-simple
+        , safe-exceptions
+        , say
+        , servant
+        , servant-server
+        , text
+        , uuid
+        , warp
     default-language: Haskell2010
 
 executable one-by-one
     main-is:          Main.hs
-
+    hs-source-dirs:   app
+    default-language: Haskell2010
     -- Modules included in this executable, other than Main.
     -- other-modules:
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:
-        base ^>=4.14.1.0,
-        one-by-one
-
-    hs-source-dirs:   app
-    default-language: Haskell2010
+        base ^>=4.14.1.0
+        , aeson
+        , dhall
+        , mtl
+        , postgresql-simple
+        , safe-exceptions
+        , say
+        , servant
+        , servant-server
+        , text
+        , uuid
+        , warp
+        , one-by-one
