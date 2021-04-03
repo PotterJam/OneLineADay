@@ -1,4 +1,7 @@
 <script>
+	import Nav from './Nav.svelte';
+	import Modal from 'svelte-simple-modal';
+
 	import { fade, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 
@@ -24,6 +27,10 @@
 		liveLines = [{ id: liveLines.length, line: line}, ...liveLines];
 	}, 1000);
 </script>
+
+<Modal>
+	<Nav/>
+</Modal>
 
 <main>
 	<h1>What will you write?</h1>
