@@ -15,7 +15,9 @@ withDbConnection f = do
   liftIO $ PG.close connection
   return res
 
-getDbConnection :: (MonadReader env m, HasConfig env, MonadIO m) => m PG.Connection
+getDbConnection
+  :: (MonadReader env m, HasConfig env, MonadIO m)
+  => m PG.Connection
 getDbConnection = do
   Config{..} <- ask <&> getConfig
   liftIO $ PG.connect PG.defaultConnectInfo

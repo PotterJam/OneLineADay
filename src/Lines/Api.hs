@@ -10,7 +10,7 @@ import Control.Monad.Except
 import Servant
 import GHC.Generics
 import Env
-import Auth.Api
+import Auth.Api -- TODO: remove this dep
 
 --type LinesApi = "lines" :> ReqBody '[JSON] String :> Post '[JSON] Line
 type LinesApi = "lines" :> Capture "text" String :> Get '[JSON] Line
@@ -26,5 +26,5 @@ linesHandler
     => AuthResult AuthenticatedUser
     -> String
     -> m Line
-linesHandler (SAS.Authenticated authedUser) text = pure $ Line (userId authedUser) text
+linesHandler (SAS.Authenticated authedUser) text = pure $ Line (authedUserId authedUser) text
 linesHandler _ _ = throwError err401
