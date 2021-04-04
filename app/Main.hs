@@ -1,7 +1,10 @@
 module Main where
 
-import LiveLines.App (run)
+import Server.App (run)
+
+port :: Int
+port = 5000
 
 main :: IO ()
 main = do
-  run 5000
+  run port
