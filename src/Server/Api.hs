@@ -9,7 +9,7 @@ import Server.Context
 import Auth.Api
 import Lines.Api
 
-type LiveLinesApi = (SAS.Auth '[SA.JWT] AuthenticatedUser :> LinesApi) :<|> LoginApi :<|> SignupApi
+type LiveLinesApi = "api" :> (SAS.Auth '[SA.JWT] AuthenticatedUser :> LinesApi) :<|> LoginApi :<|> SignupApi
 
 liveLinesServer :: SAS.CookieSettings -> SAS.JWTSettings -> ServerT LiveLinesApi AppM
 liveLinesServer cs jwts = linesHandler :<|> (loginHandler cs jwts) :<|> (signupHandler cs jwts)

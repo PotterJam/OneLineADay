@@ -8,6 +8,7 @@ import Control.Monad.Except
 import qualified Say
 import Servant
 import Servant.Auth.Server as SAS
+import Network.Wai.Middleware.Cors (simpleCors)
 
 import Server.Api
 import Server.Context
@@ -28,7 +29,7 @@ run port = do
       jwtCfg = defaultJWTSettings myKey
       cookieCfg = defaultCookieSettings{cookieIsSecure=SAS.NotSecure} -- TODO: don't care about this yet
       cfg = jwtCfg :. cookieCfg :. EmptyContext
-  Warp.runSettings settings $ mkApp cfg cookieCfg jwtCfg env
+  Warp.runSettings settings $ simpleCors $ mkApp cfg cookieCfg jwtCfg env
 
 liveLinesProxy :: Proxy LiveLinesApi
 liveLinesProxy = Proxy

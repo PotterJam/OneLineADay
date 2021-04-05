@@ -1,35 +1,55 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
-    const dispatch = createEventDispatcher();
+  import { postData } from '../api.js';
 
-    let signingUp = false;
+  let signingUp = false;
 
-    const switchToSignIn = () => {
-        signingUp = false;
-    };
+  const switchToSignIn = () => {
+      signingUp = false;
+  };
 
-    const switchToSignUp = () => {
-        signingUp = true;
-    };
+  const switchToSignUp = () => {
+      signingUp = true;
+  };
+
+  const signupForm = {
+    signupUsername: "",
+    signupEmail: "",
+    signupPassword: ""
+  };
+
+  const loginForm = {
+    loginUsername: "",
+    loginPassword: ""
+  };
+
+  const signup = async () => {
+    var resp = await postData('api/signup', signupForm);
+    console.log(resp);
+  }
+  
+  const login = async () => {
+    var resp = await postData('api/login', loginForm);
+    console.log(resp);
+  }
 </script>
 
 <div class="login-page">
     <div class="container" class:right-panel-active="{signingUp}">
     <div class="form-container sign-up-container">
-        <form on:submit|preventDefault={() => dispatch('signup')}>
-        <h1>Create Account</h1>
-        <input type="text" placeholder="Username" />
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button type="submit">Sign Up</button>
+        <form name="signup" on:submit|preventDefault={() => signup()}>
+          <h1>Create Account</h1>
+          <input type="text" placeholder="Username" bind:value={signupForm.signupUsername} />
+          <input type="email" placeholder="Email" bind:value={signupForm.signupEmail} />
+          <input type="password" placeholder="Password" bind:value={signupForm.signupPassword} />
+          <button type="submit">Sign Up</button>
         </form>
     </div>
-    <div class="form-container sign-in-container">
-        <form on:submit|preventDefault={() => dispatch('login')}>
-        <h1>Sign in</h1>
-        <input type="text" placeholder="Username" />
-        <input type="password" placeholder="Password" />
-        <button type="submit">Sign In</button>
+    <div name="login" class="form-container sign-in-container">
+        <form on:submit|preventDefault={() => login()}>
+          <h1>Sign in</h1>
+          <input type="text" placeholder="Username" bind:value={loginForm.loginUsername} />
+          <input type="password" placeholder="Password" bind:value={loginForm.loginPassword} />
+          <button type="submit">Sign In</button>
         </form>
     </div>
     <div class="overlay-container">
