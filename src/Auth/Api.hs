@@ -7,11 +7,12 @@ import Data.Aeson
 import GHC.Generics
 import Data.Text
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad (guard)
 import Servant as S
 import Servant.Auth.Server as SAS
 import Server.Context
 import User.Store as UserStore
-import User.Model
+import User.Model as U
 import Env
 
 data AuthenticatedUser = AuthenticatedUser {
@@ -45,15 +46,26 @@ loginHandler
   -> LoginForm
   -> AppM (Headers '[ Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] NoContent)
 loginHandler cookieSettings jwtSettings form = do
-  case validateLogin form of
-    Nothing -> do throwError err401
+  validatedUser <- validateLogin form
+  case validatedUser of
+    Nothing -> throwError err401
     Just user -> do
       mApplyCookies <- liftIO $ SAS.acceptLogin cookieSettings jwtSettings user
       case mApplyCookies of
-        Nothing           -> do throwError err401
+        Nothing           -> throwError err401
         Just applyCookies -> do
           Env.log("User successfully authenticated!")
           pure $ applyCookies NoContent
+
+validateLogin :: LoginForm -> AppM (Maybe AuthenticatedUser)
+validateLogin (LoginForm formUsername formPassword) = do
+  retrievedUser <- UserStore.getUserByUsername formUsername
+  case retrievedUser of
+    Nothing -> throwError err404
+    Just user -> do
+      let storedPass = U.password user
+          hasPermission = Crypto.validatePassword formPassword storedPass
+      return $ guard hasPermission >> Just (authedUserFromUser user)
 
 signupHandler
   :: SAS.CookieSettings
@@ -63,20 +75,14 @@ signupHandler
 signupHandler cookieSettings jwtSettings form = do
   newUser <- createNewUser form
   case newUser of
-    Nothing -> do throwError err401
+    Nothing -> throwError err409
     Just user -> do
       mApplyCookies <- liftIO $ SAS.acceptLogin cookieSettings jwtSettings user
       case mApplyCookies of
-        Nothing           -> do throwError err401
+        Nothing           -> throwError err401
         Just applyCookies -> do
           Env.log("User successfully authenticated!")
           pure $ applyCookies NoContent
-
-validateLogin :: LoginForm -> Maybe AuthenticatedUser
-validateLogin (LoginForm username password) =
-    if (username == "test") && (password == "test")
-    then Just $ AuthenticatedUser 1 username "test@test.com"
-    else Nothing
 
 createNewUser :: SignupForm -> AppM (Maybe AuthenticatedUser)
 createNewUser (SignupForm username email password) = do
