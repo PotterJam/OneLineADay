@@ -1,4 +1,4 @@
-# Revision history for one-by-one
+# Revision history for live-lines
 
 ## 0.1.0.0 -- YYYY-mm-dd
 
