@@ -3,6 +3,7 @@
 module User.Store where
 
 import qualified Database.PostgreSQL.Simple as PG
+import qualified Data.ByteString.Char8 as B
 import Database.PostgreSQL.Simple.SqlQQ
 import Data.Functor ((<&>))
 import GHC.Generics
@@ -17,7 +18,13 @@ data StoredUser = StoredUser {
   id :: Int
   , username :: Text
   , email :: Text
-  , password :: Text
+  , password :: B.ByteString
+} deriving (Generic, PG.FromRow)
+
+data UserToCreate = UserToCreate {
+  newUserame :: Text
+  , newEmail :: Text
+  , newPassword :: B.ByteString
 } deriving (Generic, PG.FromRow)
 
 getUserById
@@ -54,10 +61,10 @@ getUserByUsername username = do
 
 createUser
   :: (MonadReader Env m, MonadIO m)
-  => User
+  => UserToCreate
   -> m (Maybe User)
-createUser (User _ username email password) = do
-  rowsChanged <- withDbConnection $ \conn -> PG.execute conn sqlQuery (username, email, password)
+createUser (UserToCreate username email hashedPassword) = do
+  rowsChanged <- withDbConnection $ \conn -> PG.execute conn sqlQuery (username, email, hashedPassword)
   case rowsChanged of
     0 -> do
       Env.log $ "Tried to create account that aleady exists"
@@ -68,7 +75,7 @@ createUser (User _ username email password) = do
       [sql|
         INSERT INTO users(username, email, password)
         VALUES(?, ?, ?)
-        ON CONFLICT (username, email) DO NOTHING
+        ON CONFLICT DO NOTHING
       |]
 
 getUserFromStored :: StoredUser -> User

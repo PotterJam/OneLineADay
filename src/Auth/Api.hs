@@ -2,6 +2,7 @@
 
 module Auth.Api where
 
+import qualified Auth.Crypto as Crypto
 import Data.Aeson
 import GHC.Generics
 import Data.Text
@@ -79,9 +80,9 @@ validateLogin (LoginForm username password) =
 
 createNewUser :: SignupForm -> AppM (Maybe AuthenticatedUser)
 createNewUser (SignupForm username email password) = do
-  newUser <- UserStore.createUser (User (-1) username email password)
+  hashedPassword <- liftIO $ Crypto.hashPassword password
+  newUser <- UserStore.createUser (UserToCreate username email hashedPassword)
   return $ authedUserFromUser <$> newUser
-  
 
 authedUserFromUser :: User -> AuthenticatedUser
 authedUserFromUser (User uid username email _) = AuthenticatedUser uid username email

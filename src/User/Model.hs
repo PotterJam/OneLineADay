@@ -1,8 +1,8 @@
-{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module User.Model where
 
-import Data.Aeson.Types
+import qualified Data.ByteString.Char8 as B
 import Data.Text
 import GHC.Generics
 
@@ -10,5 +10,5 @@ data User = User {
     userid :: Int
     , username :: Text
     , email :: Text
-    , password :: Text
-} deriving (Eq, Show, Generic, FromJSON, ToJSON)
+    , password :: B.ByteString
+} deriving (Eq, Show, Generic)

@@ -26,6 +26,7 @@ library
         User.Store
         User.Model
         Auth.Api
+        Auth.Crypto
         Server.App
         Server.Api
         Server.Context
@@ -68,6 +69,8 @@ library
         , text
         , uuid
         , warp
+        , cryptonite
+        , bytestring
     default-language: Haskell2010
 
 executable live-lines
@@ -94,4 +97,6 @@ executable live-lines
         , text
         , uuid
         , warp
+        , cryptonite
+        , bytestring
         , live-lines
