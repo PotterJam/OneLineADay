@@ -13,7 +13,7 @@ const getData = async (url = '') => {
         'Content-Type': 'application/json'
       },
     });
-    return response.json();
+    return response;
 }
 
 const postData = async (url = '', data = {}) => {
@@ -27,5 +27,5 @@ const postData = async (url = '', data = {}) => {
       },
       body: JSON.stringify(data)
     });
-    return response.json();
+    return response;
 }

@@ -18,7 +18,8 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/public'),
     filename: '[name].js',
-    chunkFilename: '[name].[id].js'
+    chunkFilename: '[name].[id].js',
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -64,6 +65,15 @@ module.exports = {
   ],
   devtool: prod ? false : 'source-map',
   devServer: {
-    hot: true
+    hot: true,
+    port: 8080,
+    historyApiFallback: true,
+    proxy: {
+        '/api': {
+            target: 'http://localhost:5000',
+            secure: false,
+            changeOrigin: true,
+        }
+    }
   }
 };

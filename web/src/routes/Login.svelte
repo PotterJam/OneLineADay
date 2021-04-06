@@ -23,12 +23,12 @@
   };
 
   const signup = async () => {
-    var resp = await postData('api/signup', signupForm);
+    var resp = await postData('/api/signup', signupForm);
     console.log(resp);
   }
   
   const login = async () => {
-    var resp = await postData('api/login', loginForm);
+    var resp = await postData('/api/login', loginForm);
     console.log(resp);
   }
 </script>
