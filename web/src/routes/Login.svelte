@@ -1,15 +1,10 @@
-<script>
-  import { postData } from '../api.js';
+<script lang="ts">
+  import { postData } from '../Api';
 
   let signingUp = false;
 
-  const switchToSignIn = () => {
-      signingUp = false;
-  };
-
-  const switchToSignUp = () => {
-      signingUp = true;
-  };
+  const switchToSignIn = ():void => { signingUp = false };
+  const switchToSignUp = ():void => { signingUp = true } ;
 
   const signupForm = {
     signupUsername: "",
@@ -22,12 +17,12 @@
     loginPassword: ""
   };
 
-  const signup = async () => {
+  const signup = async (): Promise<void> => {
     var resp = await postData('/api/signup', signupForm);
     console.log(resp);
   }
   
-  const login = async () => {
+  const login = async (): Promise<void> => {
     var resp = await postData('/api/login', loginForm);
     console.log(resp);
   }
@@ -83,24 +78,9 @@
     box-sizing: border-box;
   }
 
-  body {
-    background: #f6f5f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
-    height: 100vh;
-    margin: -20px 0 50px;
-  }
-
   h1 {
     font-weight: bold;
     margin: 0;
-  }
-
-  h2 {
-    text-align: center;
   }
 
   p {
@@ -109,17 +89,6 @@
     line-height: 20px;
     letter-spacing: 0.5px;
     margin: 20px 0 30px;
-  }
-
-  span {
-    font-size: 12px;
-  }
-
-  a {
-    color: #333;
-    font-size: 14px;
-    text-decoration: none;
-    margin: 15px 0;
   }
 
   button {

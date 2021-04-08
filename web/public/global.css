@@ -63,11 +63,6 @@ button:focus {
   border-color: #666;
 }
 
-::selection {
-  color: none;
-  background: none;
-}
-
 /* For Mozilla Firefox */
 ::-moz-selection {
   color: none;

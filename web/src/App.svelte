@@ -1,10 +1,9 @@
-<script>
+<script lang="ts">
   import { Router, Route, link } from "svelte-routing";
-  //import Nav from './Nav.svelte';
   import Home from './routes/Home.svelte';
   import Login from './routes/Login.svelte';
 
-  export let url = "";
+  export let url: string = "";
 </script>
 
 <Router url="{url}">

@@ -1,8 +1,13 @@
-<script>
+<script lang="ts">
   import { scale } from "svelte/transition";
   import { flip } from "svelte/animate";
 
-  const lipsumLines = [
+  type Line = {
+    id: number,
+    content: string
+  };
+
+  const lipsumLines: Line[] = [
     "Lorem ipsum dolor sit amet",
     "consectetur adipiscing elit.",
     "Nullam suscipit velit turpis.",
@@ -16,14 +21,14 @@
     "Ut non lectus quis odio dictum commodo.",
     "Quisque vel mauris semper, pellentesque augue non, viverra augue.",
     "Nunc et leo quis metus ornare viverra. Aliquam sem ex, tincidunt nec metus sit amet, placerat pellentesque ipsum.",
-  ].map((x, i) => ({ id: i, line: x }));
+  ].map((x, i) => ({ id: i, content: x }));
 
   let liveLines = lipsumLines;
 
   setInterval(() => {
-    const { line } = lipsumLines[Math.floor(Math.random() * 13)];
-    liveLines = [{ id: liveLines.length, line: line }, ...liveLines];
-  }, 1000);
+    const { content } = lipsumLines[Math.floor(Math.random() * 13)];
+    liveLines = [{ id: liveLines.length, content: content }, ...liveLines];
+  }, 10000);
 </script>
 
 <main>
@@ -36,7 +41,7 @@
           animate:flip={{ duration: 300 }}
           out:scale={{ duration: 250 }}
           in:scale={{ duration: 250 }}
-          class="live-line">{line.line}</span
+          class="live-line">{line.content}</span
         >
       {/each}
     </div>
