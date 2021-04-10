@@ -1,37 +1,44 @@
 <script lang="ts">
-  import { postData } from '../Api';
+  import { navigate } from "svelte-routing";
+  import { login, signup } from '../Auth';
+
+  import type { loginForm, signupForm } from '../Auth';
 
   let signingUp = false;
 
   const switchToSignIn = ():void => { signingUp = false };
   const switchToSignUp = ():void => { signingUp = true } ;
 
-  const signupForm = {
-    signupUsername: "",
-    signupEmail: "",
-    signupPassword: ""
+  const signupForm: signupForm = {
+    signupUsername: '',
+    signupEmail: '',
+    signupPassword: ''
   };
 
-  const loginForm = {
-    loginUsername: "",
-    loginPassword: ""
+  const loginForm: loginForm = {
+    loginUsername: '',
+    loginPassword: ''
   };
 
-  const signup = async (): Promise<void> => {
-    var resp = await postData('/api/signup', signupForm);
-    console.log(resp);
+  const signupHandler = async (): Promise<void> => {
+    var success = await signup(signupForm);
+    if (success) {
+      navigate('/');
+    }
   }
   
-  const login = async (): Promise<void> => {
-    var resp = await postData('/api/login', loginForm);
-    console.log(resp);
+  const loginHandler = async (): Promise<void> => {
+    var success = await login(loginForm);
+    if (success) {
+      navigate('/');
+    }
   }
 </script>
 
 <div class="login-page">
     <div class="container" class:right-panel-active="{signingUp}">
     <div class="form-container sign-up-container">
-        <form name="signup" on:submit|preventDefault={() => signup()}>
+        <form name="signup" on:submit|preventDefault={() => signupHandler()}>
           <h1>Create Account</h1>
           <input type="text" placeholder="Username" bind:value={signupForm.signupUsername} />
           <input type="email" placeholder="Email" bind:value={signupForm.signupEmail} />
@@ -40,7 +47,7 @@
         </form>
     </div>
     <div name="login" class="form-container sign-in-container">
-        <form on:submit|preventDefault={() => login()}>
+        <form on:submit|preventDefault={() => loginHandler()}>
           <h1>Sign in</h1>
           <input type="text" placeholder="Username" bind:value={loginForm.loginUsername} />
           <input type="password" placeholder="Password" bind:value={loginForm.loginPassword} />

@@ -40,6 +40,15 @@ type SignupApi = "signup"
       :> ReqBody '[JSON] SignupForm
       :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] NoContent)
 
+type IsLoggedInApi = "isLoggedIn"
+      :> Get '[JSON] NoContent
+
+isLoggedInHandler
+  :: AuthResult AuthenticatedUser
+  -> AppM NoContent
+isLoggedInHandler (SAS.Authenticated _) = pure NoContent
+isLoggedInHandler _ = throwError err401
+
 loginHandler
   :: SAS.CookieSettings
   -> SAS.JWTSettings

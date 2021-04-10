@@ -2,8 +2,15 @@
   import { Router, Route, link } from "svelte-routing";
   import Home from './routes/Home.svelte';
   import Login from './routes/Login.svelte';
+  import { isLoggedIn } from './Auth';
+  import { onMount } from "svelte";
 
   export let url: string = "";
+
+  let loggedIn = false;
+  onMount(async () => {
+    loggedIn = await isLoggedIn();
+  });
 </script>
 
 <Router url="{url}">
