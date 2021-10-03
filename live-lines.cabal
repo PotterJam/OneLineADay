@@ -71,6 +71,7 @@ library
         , warp
         , cryptonite
         , wai-cors
+        , wai-logger
         , bytestring
     default-language: Haskell2010
 
@@ -101,4 +102,5 @@ executable live-lines
         , cryptonite
         , bytestring
         , wai-cors
+        , wai-logger
         , live-lines

@@ -9,27 +9,29 @@ import qualified Say
 import Servant
 import Servant.Auth.Server as SAS
 import Network.Wai.Middleware.Cors (simpleCors)
+import Network.Wai.Logger (withStdoutLogger)
 
-import Server.Api
+import Server.Api ( LiveLinesApi, liveLinesServer )
 import Server.Context
 import Env
 import Config
 
 run :: Int -> IO ()
 run port = do
-  putStrLn $ "Running live lines on port: " <> show port
-  config <- loadConfig "./dev.dhall"
-  myKey <- SAS.generateKey
-  let env = Env { envLog = Say.sayString
-                , envConfig = config
-                }
-      warpSettings = Warp.defaultSettings
-      portSettings = Warp.setPort port warpSettings
-      settings = Warp.setTimeout 55 portSettings
-      jwtCfg = defaultJWTSettings myKey
-      cookieCfg = defaultCookieSettings{ cookieSameSite = SameSiteStrict, cookieIsSecure=SAS.NotSecure } -- TODO: don't care about this yet
-      cfg = jwtCfg :. cookieCfg :. EmptyContext
-  Warp.runSettings settings $ simpleCors $ mkApp cfg cookieCfg jwtCfg env
+  withStdoutLogger $ \aplogger -> do
+    putStrLn $ "Running live lines on port: " <> show port
+    config <- loadConfig "./dev.dhall"
+    myKey <- SAS.generateKey
+    let env = Env { envLog = putStrLn
+                  , envConfig = config
+                  }
+        portSettings = Warp.setPort port Warp.defaultSettings
+        timeoutSettings = Warp.setTimeout 55 portSettings
+        settings = Warp.setLogger aplogger timeoutSettings
+        jwtCfg = defaultJWTSettings myKey
+        cookieCfg = defaultCookieSettings{ cookieSameSite = SameSiteStrict, cookieIsSecure=SAS.NotSecure } -- TODO: don't care about this yet
+        cfg = jwtCfg :. cookieCfg :. EmptyContext
+    Warp.runSettings settings $ simpleCors $ mkApp cfg cookieCfg jwtCfg env
 
 liveLinesProxy :: Proxy LiveLinesApi
 liveLinesProxy = Proxy

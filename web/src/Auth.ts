@@ -30,12 +30,10 @@ const updateLoginStatus = async ():Promise<void> => {
 
 const signup = async (signupForm): Promise<void> => {
     const resp = await postData('/api/signup', signupForm);
-    await updateLoginStatus();
-    //loggedIn.update(_ => resp.ok);
+    loggedIn.update(_ => resp.ok);
 }
-  
+
 const login = async (loginForm): Promise<void> => {
     const resp = await postData('/api/login', loginForm);
-    await updateLoginStatus();
-    //loggedIn.update(_ => resp.ok);
+    loggedIn.update(_ => resp.ok);
 }
