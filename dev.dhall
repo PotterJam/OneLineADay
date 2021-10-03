@@ -1,5 +1,5 @@
 { dbPort = 5432
-, dbName = "liveline"
+, dbName = "livelines"
 , dbUser = "dev"
 , dbPass = "test"
 }

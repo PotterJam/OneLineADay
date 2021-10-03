@@ -21,5 +21,4 @@ instance Dhall.FromDhall Config where
       <*> Dhall.field "dbPass" Dhall.string
 
 loadConfig :: Text -> IO Config
-loadConfig file =
-  Dhall.input Dhall.auto file
+loadConfig file = Dhall.input Dhall.auto file

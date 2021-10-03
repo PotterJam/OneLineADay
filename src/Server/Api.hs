@@ -8,9 +8,6 @@ import Servant.Auth.Server as SAS
 import Server.Context
 import Auth.Api
 import Lines.Api
-import Env
-import Control.Monad.Reader
-import Control.Monad.Except
 
 type LiveLinesApi = "api" :>
     ((SAS.Auth '[SA.JWT] AuthenticatedUser :> IsLoggedInApi) 

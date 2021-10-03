@@ -63,7 +63,7 @@ loginHandler cookieSettings jwtSettings form = do
       case mApplyCookies of
         Nothing           -> throwError err401
         Just applyCookies -> do
-          Env.log("User successfully authenticated!")
+          Env.log "User successfully authenticated"
           pure $ applyCookies NoContent
 
 validateLogin :: LoginForm -> AppM (Maybe AuthenticatedUser)
@@ -90,7 +90,7 @@ signupHandler cookieSettings jwtSettings form = do
       case mApplyCookies of
         Nothing           -> throwError err401
         Just applyCookies -> do
-          Env.log("User successfully authenticated!")
+          Env.log "User successfully authenticated"
           pure $ applyCookies NoContent
 
 createNewUser :: SignupForm -> AppM (Maybe AuthenticatedUser)

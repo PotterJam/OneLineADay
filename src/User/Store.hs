@@ -67,7 +67,7 @@ createUser (UserToCreate username email hashedPassword) = do
   rowsChanged <- withDbConnection $ \conn -> PG.execute conn sqlQuery (username, email, hashedPassword)
   case rowsChanged of
     0 -> do
-      Env.log $ "Tried to create account that aleady exists"
+      Env.log "Tried to create account that aleady exists"
       return Nothing
     _ -> getUserByUsername username
   where
