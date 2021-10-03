@@ -1,13 +1,12 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
 module.exports = {
-  entry: {
-    'build/bundle': ['./src/main.ts']
-  },
+  entry: './src/main.ts',
   resolve: {
     alias: {
       svelte: path.dirname(require.resolve('svelte/package.json'))
@@ -16,7 +15,7 @@ module.exports = {
     mainFields: ['svelte', 'browser', 'module', 'main']
   },
   output: {
-    path: path.join(__dirname, '/public'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     chunkFilename: '[name].[id].js',
     publicPath: "/",
@@ -54,8 +53,8 @@ module.exports = {
         ]
       },
 	  {
-		// required to load monaco
-        test: /\.ttf$/,
+		// required to load monaco and images
+        test: /\.(jpg|jpeg|png|svg|ttf)$/,
         use: ['file-loader'],
       },
       {
@@ -69,6 +68,9 @@ module.exports = {
   },
   mode,
   plugins: [
+    new HtmlWebpackPlugin({
+			template: path.resolve(__dirname, 'public/index.html')
+		}),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].[id].css'
