@@ -1,4 +1,4 @@
-export { updateLoginStatus, signup, login }
+export { updateLoginStatus, signup, login, logout }
 export type { signupForm, loginForm }
 export const loggedIn = writable(false);
 
@@ -36,4 +36,9 @@ const signup = async (signupForm): Promise<void> => {
 const login = async (loginForm): Promise<void> => {
     const resp = await postData('/api/login', loginForm);
     loggedIn.update(_ => resp.ok);
+}
+
+const logout = async (): Promise<void> => {
+    await postData('/api/logout');
+    loggedIn.update(_ => false);
 }

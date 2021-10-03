@@ -11,9 +11,12 @@ import Control.Monad (guard)
 import Servant as S
 import Servant.Auth.Server as SAS
 import Server.Context
+import Web.Cookie;
+
 import User.Store as UserStore
 import User.Model as U
 import Env
+import Data.Time (DiffTime)
 
 data AuthenticatedUser = AuthenticatedUser {
   authedUserId :: Int
@@ -32,6 +35,9 @@ data SignupForm = SignupForm {
   , signupPassword :: Text
 } deriving (Eq, Show, Generic, ToJSON, FromJSON)
 
+type LogoutApi = "logout"
+      :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie] NoContent)
+
 type LoginApi = "login"
       :> ReqBody '[JSON] LoginForm
       :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] NoContent)
@@ -42,6 +48,20 @@ type SignupApi = "signup"
 
 type IsLoggedInApi = "isLoggedIn"
       :> Get '[JSON] NoContent
+
+logoutHandler
+  :: AuthResult AuthenticatedUser
+  -> AppM (Headers '[Header "Set-Cookie" SetCookie] NoContent)
+logoutHandler _ = do
+  let jwtCookie = defaultSetCookie { 
+      setCookieName = "JWT-Cookie"
+    , setCookieValue = ""
+    , setCookieMaxAge = Just (0 :: DiffTime)
+    , setCookiePath = Just "/"
+    , setCookieSameSite = Just sameSiteStrict
+    , setCookieHttpOnly = True
+  }
+  pure $ S.addHeader jwtCookie NoContent
 
 isLoggedInHandler
   :: AuthResult AuthenticatedUser

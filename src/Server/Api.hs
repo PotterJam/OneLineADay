@@ -12,6 +12,7 @@ import Lines.Api
 type LiveLinesApi = "api" :>
     ((SAS.Auth '[SA.Cookie, SA.JWT] AuthenticatedUser :> IsLoggedInApi) 
     :<|> (SAS.Auth '[SA.Cookie, SA.JWT] AuthenticatedUser :> LinesApi)
+    :<|> (SAS.Auth '[SA.Cookie, SA.JWT] AuthenticatedUser :> LogoutApi)
     :<|> LoginApi
     :<|> SignupApi)
 
@@ -21,5 +22,6 @@ liveLinesServer
     -> ServerT LiveLinesApi AppM
 liveLinesServer cs jwts = isLoggedInHandler
     :<|> linesHandler
+    :<|> logoutHandler
     :<|> loginHandler cs jwts
     :<|> signupHandler cs jwts

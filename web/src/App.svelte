@@ -2,7 +2,7 @@
   import { Router, Route, link } from "svelte-routing";
   import Home from './routes/Home.svelte';
   import Login from './routes/Login.svelte';
-  import { updateLoginStatus, loggedIn } from './Auth';
+  import { updateLoginStatus, loggedIn, logout } from './Auth';
   import { onMount } from "svelte";
 
   export let url: string = "";
@@ -10,13 +10,18 @@
   onMount(async () => {
     await updateLoginStatus();
   });
+
+  const processLogout = async () => {
+    await logout();
+  };
 </script>
 
 <Router url="{url}">
   <nav>
     <a href="/" use:link>Home</a>
     {#if $loggedIn}
-      <a href=logout>Logout</a>
+      <!-- svelte-ignore a11y-missing-attribute -->
+      <a href="login" use:link on:click={processLogout}>Logout</a>
     {:else}
       <a href="login" use:link>Login</a>
     {/if}

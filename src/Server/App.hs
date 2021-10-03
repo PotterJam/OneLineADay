@@ -5,7 +5,6 @@ module Server.App(run) where
 import qualified Network.Wai.Handler.Warp as Warp
 import Control.Monad.Reader
 import Control.Monad.Except
-import qualified Say
 import Servant
 import Servant.Auth.Server as SAS
 import Network.Wai.Middleware.Cors (simpleCors)

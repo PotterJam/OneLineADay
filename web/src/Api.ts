@@ -25,7 +25,7 @@ const getData = async (url = ''): Promise<Response> => {
       credentials: credentialsOption,
       headers: {
         'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || "COOKIE NOT FOUND"
+        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || ""
       },
     });
     return response;
@@ -39,7 +39,7 @@ const postData = async (url = '', data = {}): Promise<Response> => {
       credentials: credentialsOption,
       headers: {
         'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')
+        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || ""
       },
       body: JSON.stringify(data)
     });
