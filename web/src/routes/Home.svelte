@@ -76,7 +76,6 @@
   }
 
   .live-lines-container {
-    flex: 1;
     max-width: 800px;
     margin: 2em 0 0 0;
     padding: 1em;
@@ -86,7 +85,7 @@
     align-content: flex-start;
     flex-wrap: nowrap;
     flex-direction: column;
-    height: fit-content;
+    height: max-content;
   }
 
   .live-lines-container:after {
