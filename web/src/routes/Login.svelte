@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { navigate } from "svelte-routing";
   import { login, signup } from '../Auth';
 
   import type { loginForm, signupForm } from '../Auth';
@@ -21,17 +20,11 @@
   };
 
   const signupHandler = async (): Promise<void> => {
-    var success = await signup(signupForm);
-    if (success) {
-      navigate('/');
-    }
+    await signup(signupForm);
   }
   
   const loginHandler = async (): Promise<void> => {
-    var success = await login(loginForm);
-    if (success) {
-      navigate('/');
-    }
+    await login(loginForm);
   }
 </script>
 

@@ -2,21 +2,24 @@
   import { Router, Route, link } from "svelte-routing";
   import Home from './routes/Home.svelte';
   import Login from './routes/Login.svelte';
-  import { isLoggedIn } from './Auth';
+  import { updateLoginStatus, loggedIn } from './Auth';
   import { onMount } from "svelte";
 
   export let url: string = "";
 
-  let loggedIn = false;
   onMount(async () => {
-    loggedIn = await isLoggedIn();
+    await updateLoginStatus();
   });
 </script>
 
 <Router url="{url}">
   <nav>
     <a href="/" use:link>Home</a>
-    <a href="login" use:link>Login</a>
+    {#if $loggedIn}
+      <a href=logout>Logout</a>
+    {:else}
+      <a href="login" use:link>Login</a>
+    {/if}
   </nav>
 
   <routes>

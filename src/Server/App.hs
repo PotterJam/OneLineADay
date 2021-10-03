@@ -27,7 +27,7 @@ run port = do
       portSettings = Warp.setPort port warpSettings
       settings = Warp.setTimeout 55 portSettings
       jwtCfg = defaultJWTSettings myKey
-      cookieCfg = defaultCookieSettings{cookieIsSecure=SAS.NotSecure} -- TODO: don't care about this yet
+      cookieCfg = defaultCookieSettings{ cookieSameSite = SameSiteStrict, cookieIsSecure=SAS.NotSecure } -- TODO: don't care about this yet
       cfg = jwtCfg :. cookieCfg :. EmptyContext
   Warp.runSettings settings $ simpleCors $ mkApp cfg cookieCfg jwtCfg env
 

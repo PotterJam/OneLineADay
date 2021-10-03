@@ -1,7 +1,10 @@
-export { isLoggedIn, signup, login }
+export { updateLoginStatus, signup, login }
 export type { signupForm, loginForm }
+export const loggedIn = writable(false);
 
 import { getData, postData } from './Api';
+import { writable } from 'svelte/store';
+import { navigate } from "svelte-routing";
 
 type signupForm = {
     signupUsername: string,
@@ -14,17 +17,25 @@ type loginForm = {
     loginPassword: string
 };
 
-const isLoggedIn = async ():Promise<boolean> => {
+loggedIn.subscribe(authenticated => {
+    if (authenticated) {
+        navigate('/');
+    }
+});
+
+const updateLoginStatus = async ():Promise<void> => {
     const resp = await getData('/api/isLoggedIn');
-    return resp.ok;
+    loggedIn.update(_ => resp.ok);
 };
 
-const signup = async (signupForm): Promise<boolean> => {
+const signup = async (signupForm): Promise<void> => {
     const resp = await postData('/api/signup', signupForm);
-    return resp.ok;
+    await updateLoginStatus();
+    //loggedIn.update(_ => resp.ok);
 }
   
-const login = async (loginForm): Promise<boolean> => {
+const login = async (loginForm): Promise<void> => {
     const resp = await postData('/api/login', loginForm);
-    return resp.ok;
+    await updateLoginStatus();
+    //loggedIn.update(_ => resp.ok);
 }
