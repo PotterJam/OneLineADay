@@ -1,6 +1,8 @@
 <script lang="ts">
   import { scale } from "svelte/transition";
   import { flip } from "svelte/animate";
+  import { loggedIn } from "../Auth"
+  import { createLine } from "../services/lines";
 
   type Line = {
     id: number,
@@ -29,11 +31,20 @@
     const { content } = lipsumLines[Math.floor(Math.random() * 13)];
     liveLines = [{ id: liveLines.length, content: content }, ...liveLines];
   }, 10000);
+
+  let line = '';
+
+  const submitLine = async () => {
+    createLine(line);
+  };
 </script>
 
 <main>
   <h1>What will you write?</h1>
-  <input id="input-line" type="text" placeholder="There's no going back." />
+  <input bind:value={line} id="input-line" type="text" placeholder="There's no going back." />
+  {#if $loggedIn}
+    <button on:click={submitLine}>Submit</button>
+  {/if}
   <div class="live-lines-content">
     <div class="live-lines-container">
       {#each liveLines as line, i (line.id)}

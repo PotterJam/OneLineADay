@@ -1,4 +1,4 @@
-{-# LANGUAGE QuasiQuotes, DeriveAnyClass, DeriveGeneric #-}
+{-# LANGUAGE QuasiQuotes, DeriveAnyClass, DeriveGeneric, ScopedTypeVariables #-}
 
 module User.Store where
 
@@ -13,6 +13,7 @@ import Data.Text
 import User.Model
 import DB
 import Env
+import Text.Printf
 
 data StoredUser = StoredUser {
   id :: Int
@@ -64,18 +65,18 @@ createUser
   => UserToCreate
   -> m (Maybe User)
 createUser (UserToCreate username email hashedPassword) = do
-  rowsChanged <- withDbConnection $ \conn -> PG.execute conn sqlQuery (username, email, hashedPassword)
-  case rowsChanged of
-    0 -> do
-      Env.log "Tried to create account that aleady exists"
+  returned :: [PG.Only Int] <- withDbConnection $ \conn -> PG.query conn sqlQuery (username, email, hashedPassword)
+  case returned of
+    [PG.Only userId] -> return $ Just $ getUserFromStored $ StoredUser userId username email hashedPassword
+    _ -> do
+      Env.log $ printf "Tried to create account that aleady exists. Requested username %s email %s" (show username) (show email)
       return Nothing
-    _ -> getUserByUsername username
   where
     sqlQuery =
       [sql|
         INSERT INTO users(username, email, password)
         VALUES(?, ?, ?)
-        ON CONFLICT DO NOTHING
+        RETURNING id
       |]
 
 getUserFromStored :: StoredUser -> User

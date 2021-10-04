@@ -5,9 +5,9 @@ import Control.Monad.Reader
 import Config
 
 data Env = Env
-    { envLog        :: String -> IO ()
-    , envConfig     :: Config
-    }
+  { envLog        :: String -> IO ()
+  , envConfig     :: Config
+  }
 
 class HasLog a where
   getLog :: a -> (String -> IO ())
@@ -24,8 +24,8 @@ instance HasConfig Env where
   getConfig = envConfig
 
 log :: (MonadReader env m, HasLog env, MonadIO m)
-    => String
-    -> m ()
+  => String
+  -> m ()
 log msg = do
   env <- ask
   liftIO $ getLog env msg

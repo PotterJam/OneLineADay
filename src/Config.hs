@@ -5,12 +5,12 @@ import GHC.Word (Word16)
 import qualified Dhall
 
 data Config = Config
-    { cfgDbPort      :: Word16
-    , cfgDbName      :: String
-    , cfgDbUser      :: String
-    , cfgDbPass      :: String
-    }
-    deriving Show
+  { cfgDbPort      :: Word16
+  , cfgDbName      :: String
+  , cfgDbUser      :: String
+  , cfgDbPass      :: String
+  }
+  deriving Show
 
 instance Dhall.FromDhall Config where
   autoWith _ = Dhall.record $
