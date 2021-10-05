@@ -6,8 +6,8 @@ import GHC.Generics (Generic)
 import Data.DateTime
 
 data Line = Line
-  { id :: Int
-  , body :: String
-  , created :: DateTime
+  { lineId :: Int
+  , lineBody :: String
+  , lineCreated :: DateTime
   }
   deriving (Eq, Show, Generic)

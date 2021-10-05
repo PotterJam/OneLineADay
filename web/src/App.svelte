@@ -3,13 +3,10 @@
   import Home from './routes/Home.svelte';
   import Login from './routes/Login.svelte';
   import { updateLoginStatus, loggedIn, logout } from './Auth';
-  import { onMount } from "svelte";
 
   export let url: string = "";
 
-  onMount(async () => {
-    await updateLoginStatus();
-  });
+  updateLoginStatus();
 
   const processLogout = async () => {
     await logout();

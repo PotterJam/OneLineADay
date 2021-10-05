@@ -20,27 +20,49 @@ newtype LineRequest = LineRequest
   deriving (Generic, JSON.FromJSON)
 
 data LineResponse = LineResponse
-  { id :: Int
-  , body :: String
-  , created :: DateTime
+  { respId :: Int
+  , respBody :: String
+  , respCreated :: DateTime
   }
   deriving (Generic, JSON.ToJSON)
 
-type LinesApi = "lines" :> ReqBody '[JSON] LineRequest :> Post '[JSON] LineResponse
+type LinesApi = "lines" :>
+  (Get '[JSON] [LineResponse]
+  :<|> (ReqBody '[JSON] LineRequest :> Post '[JSON] LineResponse))
 
 linesHandler
   :: (MonadError ServerError m, MonadIO m, MonadReader Env m)
   => AuthResult AuthenticatedUser
+  -> ServerT LinesApi m
+linesHandler (SAS.Authenticated authedUser) =
+  lineGetHandler userId
+  :<|> lineCreateHandler userId
+    where userId = authedUserId authedUser
+
+linesHandler _ = throwError err401 :<|> \_ -> throwError err401
+
+
+lineGetHandler
+  :: (MonadError ServerError m, MonadIO m, MonadReader Env m)
+  => Int
+  -> m [LineResponse]
+lineGetHandler userId = do
+  usersLines <- LineStore.getLines userId
+  return $ createLineResponse <$> usersLines
+
+lineCreateHandler
+  :: (MonadError ServerError m, MonadIO m, MonadReader Env m)
+  => Int
   -> LineRequest
   -> m LineResponse
-linesHandler (SAS.Authenticated authedUser) (LineRequest message) = do
-  createdLine <- LineStore.createLine message (authedUserId authedUser)
+lineCreateHandler userId (LineRequest message) = do
+  createdLine <- LineStore.createLine message userId
   case createdLine of
     Just li -> return $ createLineResponse li
-    Nothing -> throwError err500
+    Nothing -> do
+      Env.log $ "Could not create line for user " ++ show userId
+      throwError err500
 
-linesHandler _ _ = throwError err401
 
 createLineResponse :: Line -> LineResponse
 createLineResponse (Line lineId body created) = LineResponse lineId body created
-

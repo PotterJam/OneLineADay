@@ -2,40 +2,20 @@
   import { scale } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { loggedIn } from "../Auth"
-  import { createLine } from "../services/lines";
+  import { createLine, getLines, Line } from "../services/lines";
+  import { onMount } from "svelte";
 
-  type Line = {
-    id: number,
-    content: string
-  };
+  let liveLines: Line[] = [];
 
-  const lipsumLines: Line[] = [
-    "Lorem ipsum dolor sit amet",
-    "consectetur adipiscing elit.",
-    "Nullam suscipit velit turpis.",
-    "Morbi fermentum tempus lacus, nec venenatis arcu malesuada idnec venenatis arcu malesuada idnec.",
-    "Vestibulum interdum vestibulum urna ac elementum.",
-    "Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    "Fusce nec laoreet elit, quis maximus elit.",
-    "Vivamus mattis nulla ac ipsum varius, at mollis justo vestibulum.",
-    "Suspendisse sed nulla ut dolor vehicula vestibulum in non ante.",
-    "Etiam sagittis sagittis lacinia.",
-    "Ut non lectus quis odio dictum commodo.",
-    "Quisque vel mauris semper, pellentesque augue non, viverra augue.",
-    "Nunc et leo quis metus ornare viverra. Aliquam sem ex, tincidunt nec metus sit amet, placerat pellentesque ipsum.",
-  ].map((x, i) => ({ id: i, content: x }));
-
-  let liveLines = lipsumLines;
-
-  setInterval(() => {
-    const { content } = lipsumLines[Math.floor(Math.random() * 13)];
-    liveLines = [{ id: liveLines.length, content: content }, ...liveLines];
-  }, 10000);
+  onMount(async () => {
+    liveLines = await getLines();
+  });
 
   let line = '';
 
   const submitLine = async () => {
-    createLine(line);
+    const newLine = await createLine(line);
+    liveLines = [newLine, ...liveLines];
   };
 </script>
 
@@ -52,7 +32,7 @@
           animate:flip={{ duration: 300 }}
           out:scale={{ duration: 250 }}
           in:scale={{ duration: 250 }}
-          class="live-line">{line.content}</span
+          class="live-line">{line.body}</span
         >
       {/each}
     </div>
@@ -87,7 +67,8 @@
   }
 
   .live-lines-container {
-    max-width: 800px;
+    flex: 1;
+    max-width: 700px;
     margin: 2em 0 0 0;
     padding: 1em;
     border-radius: 30px 30px 0 0;

@@ -19,10 +19,27 @@ data LineToCreate = LineToCreate
 
 data StoredLine = StoredLine
   { id :: Int
-  , storedBody :: String
-  , created :: DateTime
+  , body :: String
+  , created_at :: DateTime
   }
   deriving (Eq, Show, Generic, PG.FromRow)
+
+getLines
+  :: (MonadReader Env m, MonadIO m)
+  => Int
+  -> m [Line]
+getLines userId = do
+  withDbConnection $ \conn -> do
+    storedLines <- PG.query conn sqlQuery (PG.Only userId)
+    return $ getLineFromStored <$> storedLines
+  where
+    sqlQuery =
+      [sql|
+        SELECT id, body, created_at
+        FROM lines
+        WHERE user_id = ?
+        ORDER BY created_at desc
+      |]
 
 createLine
   :: (MonadReader Env m, MonadIO m)
@@ -30,13 +47,11 @@ createLine
   -> Int
   -> m (Maybe Line)
 createLine message userId = do
-  returned :: [(Int, DateTime)] <- withDbConnection $ \conn -> PG.query conn sqlQuery (userId, message)
-  case returned of
-    [(lineId, createdAt)] -> do
-      return $ Just $ getLineFromStored (StoredLine lineId message createdAt)
-    _ -> do
-      Env.log $ "Couldn't create line for user " ++ show userId
-      return Nothing
+  withDbConnection $ \conn -> do
+    returned :: [(Int, DateTime)] <- PG.query conn sqlQuery (userId, message)
+    return $ case returned of
+      [(lineId, createdAt)] -> Just $ getLineFromStored (StoredLine lineId message createdAt)
+      _ -> Nothing
   where
     sqlQuery =
       [sql|
