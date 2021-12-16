@@ -5,7 +5,7 @@ GRANT CONNECT ON DATABASE livelines TO dev;
 CREATE TABLE users
 (
     id serial PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL, -- TODO: add index on username for login lookup
+    username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -18,7 +18,7 @@ CREATE INDEX users_email_idx ON users (email);
 GRANT UPDATE, INSERT, SELECT ON TABLE users TO dev;
 GRANT ALL ON SEQUENCE users_id_seq TO dev;
 
-CREATE lines
+CREATE TABLE lines
 (
     id serial PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) NOT NULL,
