@@ -1,4 +1,5 @@
-{ dbPort = 5432
+{ dbHost = "localhost"
+, dbPort = 5432
 , dbName = "livelines"
 , dbUser = "dev"
 , dbPass = "test"

@@ -21,7 +21,8 @@ getDbConnection
 getDbConnection = do
   Config{..} <- ask <&> getConfig
   liftIO $ PG.connect PG.defaultConnectInfo
-    { PG.connectDatabase = cfgDbName
+    { PG.connectHost = cfgDbHost
+    , PG.connectDatabase = cfgDbName
     , PG.connectUser = cfgDbUser
     , PG.connectPort = cfgDbPort
     , PG.connectPassword = cfgDbPass
